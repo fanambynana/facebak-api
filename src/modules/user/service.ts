@@ -1,8 +1,16 @@
 import {prisma} from "../../lib/db";
 import {badRequestError, notFoundError, conflictError} from "../../util/error";
 import {omit} from "../../util/object-util";
-import {CreateUserDto, UpdateUserDto} from "./schema";
+import {CreateUserDto, UpdateUserDto, LoginDto} from "./schema";
 import {hash, compare} from "bcrypt";
+
+/*
+const Fastify = fastify();
+
+Fastify.register(fastifyJwt, {
+  secret: "supersecret"
+});
+*/
 
 // TODO: use dedicated `mapper` to map from internal object to rest object
 export const getUsers = async () => {
@@ -91,3 +99,26 @@ export const updateUser = async (data: UpdateUserDto) => {
   });
   return omit(record, ["password"]);
 };
+
+export const login  = async (data: LoginDto) => {
+  const {email, password} = data;
+
+  const persisted = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+  });
+
+  if (!persisted) {
+    throw notFoundError(email + " doesn't match any account, please sign in");
+  }
+
+  const authenticate = await compare(password, persisted.password);
+  if (!authenticate) {
+    throw badRequestError("Wrong password !")
+  }
+  
+  //const token = Fastify.jwt.sign({ id: persisted.id, username: persisted.username });
+
+  return {id: persisted.id, username : persisted.username, loggedIn : true};
+}

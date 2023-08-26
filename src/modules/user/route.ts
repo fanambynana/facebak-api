@@ -4,6 +4,7 @@ import {
   getUserByIdHandler,
   getUsersHandler,
   updateUserHandler,
+  loginHandler,
 } from "./controller";
 import {$ref} from "../shared";
 
@@ -30,6 +31,16 @@ export const userRoutes: FastifyPluginCallback = (server, _, done) => {
       },
     },
     updateUserHandler
+  );
+
+  server.post(
+    "/login",
+    {
+      schema: {
+        body: $ref("loginDto"),
+      },
+    },
+    loginHandler
   );
 
   done();

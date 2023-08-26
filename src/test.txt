@@ -1,0 +1,51 @@
+// With tokken
+
+import fastify from "fastify";
+import jwt from "@fastify/jwt";
+
+const app = fastify();
+
+// Register the JWT plugin
+app.register(jwt, {
+  secret: "my-secret",
+});
+
+// Define the signIn route
+app.post("/signin", async (req: , res) => {
+  // Get the username and password from the request body
+  const username = req.body.username;
+  const password = req.body.password;
+
+  // Check if the username and password are valid
+  const user = await app.db.users.findOne({ username, password });
+  if (!user) {
+    res.status(401).send("Invalid username or password");
+    return;
+  }
+
+  // Generate a JWT token for the user
+  const token = await jwt.sign({ id: user.id, username: user.username });
+
+  // Send the token to the client
+  res.status(200).send({ token });
+});
+
+// Define the signOut route
+app.post("/signout", async (req, res) => {
+  // Get the JWT token from the request header
+  const token = req.headers.authorization.split(" ")[1];
+
+  // Revoke the token
+  await jwt.revoke(token);
+
+  // Redirect the client to the homepage
+  res.redirect("/");
+});
+
+app.listen({ port: 3000 }, (err) => {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  console.log("App listening on port 3000");
+});

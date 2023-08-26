@@ -1,6 +1,21 @@
 import {hashSync} from "bcrypt";
 import {PrismaClient, ReactionType} from "@prisma/client";
 
+
+// protectd route
+/*
+JWT
+render : hosting
+
+splice et filter : manala elément
+
+user memo, use callback
+
+set state :
+ - new value
+ - callback : parma (old value, )
+*/
+
 const users = [
   {
     id: "9b12d8e1-75b4-44e9-939f-e35807a27d35",
@@ -12,7 +27,7 @@ const users = [
   },
   {
     id: "01579c39-b336-492e-ad82-34d81debff9d",
-    email: "bbresner1@fema.gov",
+    email: "kL5~MN<9=pjqzC",
     password: "kL5~MN<9=pjqzC",
     username: "gpridie1",
     bio: "implement visionary paradigms",

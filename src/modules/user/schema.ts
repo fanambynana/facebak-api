@@ -21,10 +21,18 @@ export const updateUserDto = z.object({
   confirmNewPassword: z.string().min(8).optional(),
 });
 
+export const loginDto = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+})
+
+export type LoginDto = z.infer<typeof loginDto>;
+
 export type CreateUserDto = z.infer<typeof createUserDto>;
 export type UpdateUserDto = z.infer<typeof updateUserDto>;
 
 export const User = {
   createUserDto,
   updateUserDto,
+  loginDto
 };
